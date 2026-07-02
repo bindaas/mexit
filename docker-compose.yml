@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mexit
+    ports:
+      - "5432:5432"
+    volumes:
+      - mexit_postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: backend/.env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mexit
+      PORT: "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+volumes:
+  mexit_postgres_data:
